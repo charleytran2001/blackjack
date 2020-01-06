@@ -26,12 +26,11 @@ function starting_hand() {
       document.getElementById("status").innerHTML = "Blackjack: You Win";
     }
   }
-  
 }
 
 function hit() {
   // Generates random number for user's hand
-  var user_random = Math.floor(Math.random() * 10 + 1);
+  var user_random = Math.floor(Math.random() * 11 + 1);
   user_hand_total += user_random;
   user_hand[user_card_counter] = user_random;
   document.getElementById("user_hand").innerHTML = "Your Hand: " + user_hand;
@@ -47,10 +46,6 @@ function hit() {
     document.getElementById("status").innerHTML = "Bust: You Lose";
   }
   
-  if(user_hand_total === 21) {
-    stand();
-  }
-  
   if(charlie_counter === 6 && user_hand_total <= 21) {
     dealer();
     document.getElementById("status").innerHTML = "6-Card Charlie: You Win";
@@ -60,7 +55,7 @@ function hit() {
 
 function dealer() {
     // Generates dealer's hand
-    var dealer_random = Math.floor(Math.random() * 10 + 1);
+    var dealer_random = Math.floor(Math.random() * 11 + 1);
     dealer_hand_total += dealer_random;
     dealer_hand[dealer_card_counter] = dealer_random;
     document.getElementById("dealer_hand").innerHTML = "Dealer's Hand: " + dealer_hand;
@@ -75,6 +70,9 @@ function stand() {
   while(dealer_hand_total < 17) {
     dealer();
   }
+  
+  console.log(dealer_hand_total);
+  console.log(dealer_card_counter);
   
   // Checks if dealer's hand goes over 21. If so, subtracts one card.
   var dealer_remove = dealer_hand[dealer_card_counter - 1];
@@ -93,6 +91,11 @@ function stand() {
     document.getElementById("status").innerHTML = "You Lose";
   } else {
     document.getElementById("status").innerHTML = "It's a Tie";
+  }
+  
+  // Checks if dealer has a blackjack
+  if(dealer_hand_total === 21 && dealer_card_counter === 2) {
+    document.getElementById("status").innerHTML = "Dealer Blackjack: You Lose";
   }
   
 }

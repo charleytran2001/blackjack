@@ -132,6 +132,11 @@ function stand() {
     document.getElementById("status").innerHTML = "It's a Tie";
   }
   
+  // Checks if dealer's hand goes over 21
+  if(dealer_hand_total > 21) {
+    document.getElementById("status").innerHTML = "Dealer Bust: You Win";
+  }
+  
   // Checks for Blackjack
   if(user_hand_total === 21 && user_card_counter === 2 && dealer_hand_total === 21 && dealer_card_counter === 2) {
     document.getElementById("status").innerHTML = "Double Blackjack: Tie";

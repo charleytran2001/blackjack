@@ -6,13 +6,14 @@
   <title>JS Bin</title>
 </head>
 <body>
-  <p id="status"></p>
-  <p id="user_hand"><p>
-  <p id="user_hand_total"><p>
-  <p id="dealer_hand"><p>
-  <p id="dealer_hand_total"><p>
-  <button onclick="hit()">Hit</button>
-  <button onclick="stand()">Stand</button>
+  <p id="status">Welcome to Blackjack</p>
+  <p id="user_hand">Your Hand:<p>
+  <p id="user_hand_total">Total:<p>
+  <p id="dealer_hand">Dealer's Hand:<p>
+  <p id="dealer_hand_total">Total:<p>
+  <button id="hit" onclick="hit()" disabled>Hit</button>
+  <button id="stand" onclick="stand()" disabled>Stand</button>
+  <button id="reset" onclick="reset()">Start</button>
   
   <script src="script.js"></script>
 </body>

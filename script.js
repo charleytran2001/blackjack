@@ -1,13 +1,25 @@
 // Variables
-  var user_hand_total;
-  var user_hand;
-  var dealer_hand_total;
-  var dealer_hand;
-  var charlie_counter;
-  var user_card_counter;
-  var dealer_card_counter;
+var money = 500;
+var currentBet = 0;
+var user_hand_total;
+var user_hand;
+var dealer_hand_total;
+var dealer_hand;
+var charlie_counter;
+var user_card_counter;
+var dealer_card_counter;
 
-function reset() {
+// Betting code
+document.getElementById("money").innerHTML = "Money: $" + money;
+document.getElementById("betOutput").innerHTML = "Bet: $" + bet.value;
+
+bet.oninput = function() {
+  document.getElementById("betOutput").innerHTML = "Bet: $" + this.value;
+}
+
+document.getElementById("bet").max = money;
+
+function start() {
   // Reset Variables
   user_hand_total = 0;
   user_hand = [];
@@ -18,15 +30,31 @@ function reset() {
   dealer_card_counter = 0;
   
   document.getElementById("status").innerHTML = "Welcome to Blackjack";
+  
+  // Bet
+  currentBet = document.getElementById("bet").value;
+  money -= currentBet;
+  document.getElementById("money").innerHTML = "Money: $" + money;
+  document.getElementById("currentBetOutput").innerHTML = "Currently Betting: $" + currentBet;
 
   starting_hand();
 }
 
 function starting_hand() {
-  document.getElementById("reset").innerHTML = "Reset";
-  document.getElementById("hit").disabled = false;
-  document.getElementById("stand").disabled = false;
-  document.getElementById("reset").disabled = true;
+  // Hides buttons
+  document.getElementById("hit").hidden = false;
+  document.getElementById("stand").hidden = false;
+  document.getElementById("double").hidden = false;
+  document.getElementById("surrender").hidden = false;
+  document.getElementById("start").hidden = true;
+  document.getElementById("currentBetOutput").hidden = false;
+  document.getElementById("betOutput").hidden = true;
+  document.getElementById("bet").hidden = true;
+  
+  // Disables double down if user doesn't have enough money
+  if(money < currentBet) {
+    document.getElementById("double").disabled = true;
+  }
   
   // User's starting hand
   while(user_card_counter < 2) {
@@ -42,43 +70,9 @@ function starting_hand() {
   document.getElementById("dealer_hand").innerHTML = "Dealer's Hand: " + dealer_hand[0] + ",?";
   document.getElementById("dealer_hand_total").innerHTML = "Total: " + dealer_hand[0];
   
-  if(user_hand_total === 21) {
-    stand();
-  }
-}
-
-function hit() {
-  // Generates random number for user's hand
-  var user_random = Math.floor(Math.random() * 10 + 1);
-  user_hand_total += user_random;
-  user_hand[user_card_counter] = user_random;
-  
-  // Debug
-//   user_hand = [10,10,1];
-//   user_hand_total = 21;
-//   user_card_counter = 3;
-  
-  document.getElementById("user_hand").innerHTML = "Your Hand: " + user_hand;
-  document.getElementById("user_hand_total").innerHTML = "Total: " + user_hand_total;
-  
-  // Counters
-  charlie_counter++;
-  user_card_counter++;
-  
-  // Checks for stuff
-  if(user_hand_total > 21) {
-    stand();
-    document.getElementById("status").innerHTML = "Bust: You Lose";
-  }
-  
-  if(user_hand_total === 21 && dealer_card_counter >= 2) {
-    stand();
-  }
-  
-  if(charlie_counter === 6 && user_hand_total <= 21) {
-    stand();
-    document.getElementById("status").innerHTML = "6-Card Charlie: You Win";
-  } 
+//   if(dealer_hand[0] === (10 || 11)) {
+//     document.getElementById("insurance").disabled = false;
+//   }
   
 }
 
@@ -100,7 +94,7 @@ function dealer() {
   dealer_card_counter++;
 }
 
-function stand() {
+function dealerReveal() {
   // Runs until dealer's hand is 17 or more
   while(dealer_hand_total < 17) {
     dealer();
@@ -110,6 +104,92 @@ function stand() {
   if(dealer_hand_total >= 17) {
     document.getElementById("dealer_hand").innerHTML = "Dealer's Hand: " + dealer_hand;
     document.getElementById("dealer_hand_total").innerHTML = "Total: " + dealer_hand_total;
+  }
+  
+}
+
+function hit() {
+  // Disables surrender
+  if(user_card_counter >= 2) {
+    document.getElementById("surrender").disabled = true;
+  }
+  
+  // Generates random number for user's hand
+  var user_random = Math.floor(Math.random() * 10 + 1);
+  user_hand_total += user_random;
+  user_hand[user_card_counter] = user_random;
+  
+  // Debug
+//   user_hand = [10,10,1];
+//   user_hand_total = 21;
+//   user_card_counter = 3;
+  
+  document.getElementById("user_hand").innerHTML = "Your Hand: " + user_hand;
+  document.getElementById("user_hand_total").innerHTML = "Total: " + user_hand_total;
+  
+  // Counters
+  charlie_counter++;
+  user_card_counter++;
+  
+  // Checks for 21
+  if(user_hand_total === 21) {
+    stand();
+  }
+  
+  // Checks for bust
+  if(user_hand_total > 21) {
+    stand();
+  }
+  
+}
+
+function stand() { 
+  // Checks for Blackjack
+  dealerReveal();
+  if(user_hand_total === 21 && user_card_counter === 2 && dealer_hand_total === 21 && dealer_card_counter === 2) {
+    document.getElementById("status").innerHTML = "Double Blackjack: Tie";
+    money += currentBet * 1;
+    document.getElementById("money").innerHTML = "Money: $" + money;
+    reset();
+  } else if(user_hand_total === 21 && user_card_counter === 2) {
+      document.getElementById("status").innerHTML = "Blackjack: You Win";
+      money += currentBet * 2.5;
+      document.getElementById("money").innerHTML = "Money: $" + money;
+      reset();
+  } else if(dealer_hand_total === 21 && dealer_card_counter === 2) {
+      document.getElementById("status").innerHTML = "Dealer Blackjack: You Lose";
+      reset();
+  // Checks Charlie counter
+  } else if(charlie_counter === 6 && user_hand_total <= 21) {
+      document.getElementById("status").innerHTML = "6-Card Charlie: You Win";
+      money += currentBet * 2;
+      document.getElementById("money").innerHTML = "Money: $" + money;
+      reset();
+  // Checks if user busted
+  } else if(user_hand_total > 21) {
+      document.getElementById("status").innerHTML = "Bust: You Lose";
+      reset();
+  // Checks if dealer busted
+  } else if(dealer_hand_total > 21) {
+      document.getElementById("status").innerHTML = "Dealer Bust: You Win";
+      money += currentBet * 2;
+      document.getElementById("money").innerHTML = "Money: $" + money;
+      reset();
+  // Checks for victor
+  } else if(user_hand_total > dealer_hand_total) {
+      document.getElementById("status").innerHTML = "You Win";
+      money += currentBet * 2;
+      document.getElementById("money").innerHTML = "Money: $" + money;
+      reset();
+  } else if(user_hand_total < dealer_hand_total) {
+      document.getElementById("status").innerHTML = "You Lose";
+      document.getElementById("money").innerHTML = "Money: $" + money;
+      reset();
+  } else {
+    document.getElementById("status").innerHTML = "It's a Tie";
+    money += currentBet * 1;
+    document.getElementById("money").innerHTML = "Money: $" + money;
+    reset();
   }
   
   // Old Code
@@ -122,35 +202,7 @@ function stand() {
 //     document.getElementById("dealer_hand").innerHTML = "Dealer's Hand: " + dealer_hand + " || " + dealer_remove;
 //     document.getElementById("dealer_hand_total").innerHTML = "Total: " + dealer_hand_total + " || " + dealer_hand_total_bust;
 //   }
-  
-  // Checks for victor
-  if(user_hand_total > dealer_hand_total) {
-    document.getElementById("status").innerHTML = "You Win";
-  } else if(user_hand_total < dealer_hand_total) {
-    document.getElementById("status").innerHTML = "You Lose";
-  } else {
-    document.getElementById("status").innerHTML = "It's a Tie";
-  }
-  
-  // Checks if dealer's hand goes over 21
-  if(dealer_hand_total > 21) {
-    document.getElementById("status").innerHTML = "Dealer Bust: You Win";
-  }
-  
-  // Checks for Blackjack
-  if(user_hand_total === 21 && user_card_counter === 2 && dealer_hand_total === 21 && dealer_card_counter === 2) {
-    document.getElementById("status").innerHTML = "Double Blackjack: Tie";
-  } else if(user_hand_total === 21 && user_card_counter === 2) {
-    document.getElementById("status").innerHTML = "Blackjack: You Win";
-  } else if(dealer_hand_total === 21 && dealer_card_counter === 2) {
-    document.getElementById("status").innerHTML = "Dealer Blackjack: You Lose";
-  } 
-  
-  // Disables/Enables buttons
-  document.getElementById("hit").disabled = true;
-  document.getElementById("stand").disabled = true;
-  document.getElementById("reset").disabled = false;
-  
+ 
   // Debug
 //   console.log("Dealer" + dealer_hand);
 //   console.log(dealer_hand_total);
@@ -159,5 +211,81 @@ function stand() {
 //   console.log("User" + user_hand);
 //   console.log(user_hand_total);
 //   console.log(user_card_counter);
+
+}
+
+function double() {
+  // Doubles bet
+  money -= currentBet;
+  currentBet *= 2;
+  document.getElementById("money").innerHTML = "Money: $" + money;
+  document.getElementById("currentBetOutput").innerHTML = "Currently Betting: $" + currentBet;
+  hit();
+  stand();
+}
+
+function surrender() {
+  // Lose half the initial wager
+  dealerReveal();
+  document.getElementById("status").innerHTML = "Surrendered";
+  money += currentBet * 0.5;
+  document.getElementById("money").innerHTML = "Money: $" + money;
+  reset();
+}
+
+function reset() {
+  // Resets bet
+  currentBet = 0;
+  document.getElementById("currentBetOutput").innerHTML = "Currently Betting: $" + currentBet;
+  document.getElementById("bet").max = money;
   
+  // Disables/Enables buttons
+  document.getElementById("hit").hidden = true;
+  document.getElementById("stand").hidden = true;
+  document.getElementById("double").hidden = true;
+  document.getElementById("double").disabled = false;
+  document.getElementById("start").hidden = false;
+  document.getElementById("currentBetOutput").hidden = false;
+  document.getElementById("betOutput").hidden = false;
+  document.getElementById("bet").hidden = false;
+  document.getElementById("surrender").hidden = true;
+  document.getElementById("surrender").disabled = false;
+  
+  // Game over message
+  if(money <= 0) {
+    document.getElementById("hit").hidden = true;
+    document.getElementById("stand").hidden = true;
+    document.getElementById("start").hidden = true;
+    document.getElementById("double").hidden = true;
+    document.getElementById("surrender").hidden = true;
+    document.getElementById("betOutput").hidden = true;
+    document.getElementById("bet").hidden = true;
+    document.getElementById("currentBetOutput").hidden = true;
+    
+    var deathmessage = Math.floor(Math.random() * 5 + 1);
+    switch(deathmessage) {
+      case 1:
+        document.getElementById("status").innerHTML = "You ran out of money and commited toaster bath. You died. THE END";
+        break;
+      case 2:
+        document.getElementById("status").innerHTML = "You ran out of money which means you are now useless to the casino, so the dealer shoots you. You died. THE END";
+        break;
+      case 3:
+        document.getElementById("status").innerHTML = "You smoke a cig to relieve the stress of losing all your money. Unfortunately for you, you got lung cancer and died. THE END";
+        break;
+      case 4:
+        document.getElementById("status").innerHTML = "You tripped on your way out of the casino and snapped your neck. You died. THE END";
+        break;
+      case 5:
+        document.getElementById("status").innerHTML = "As you were walking out of the casino, a meteor hits you. You died. THE END";
+        break;
+      case 6:
+        document.getElementById("status").innerHTML = "You second you got into your car to leave, it blew up. You died. THE END";
+        break;
+    }    
+//     document.getElementById("status").innerHTML = " You died. THE END";
+//     document.getElementById("status").innerHTML = " You died. THE END";
+//     document.getElementById("status").innerHTML = " You died. THE END";
+//     document.getElementById("status").innerHTML = " You died. THE END";
+  }
 }

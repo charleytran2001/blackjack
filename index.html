@@ -3,17 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>JS Bin</title>
+  <title>Blackjack</title>
 </head>
 <body>
   <p id="status">Welcome to Blackjack</p>
-  <p id="user_hand">Your Hand:<p>
-  <p id="user_hand_total">Total:<p>
-  <p id="dealer_hand">Dealer's Hand:<p>
-  <p id="dealer_hand_total">Total:<p>
-  <button id="hit" onclick="hit()" disabled>Hit</button>
-  <button id="stand" onclick="stand()" disabled>Stand</button>
-  <button id="reset" onclick="reset()">Start</button>
+  <p id="user_hand"><p>
+  <p id="user_hand_total"><p>
+  <p id="dealer_hand"><p>
+  <p id="dealer_hand_total"><p>
+  <button id="hit" onclick="hit()" hidden>Hit</button>
+  <button id="stand" onclick="stand()" hidden>Stand</button>
+  <button id="start" onclick="start()">Start</button>
+  <button id="double" onclick="double()" hidden>Double Down</button>
+  <button id="surrender" onclick="surrender()" hidden>Surrender</button>
+  <p>----------</p>
+  <p id="money"></p>
+  <p id="currentBetOutput" hidden>Currently Betting: $0</p>
+  <p id="betOutput">Bet:</p>
+  <input type="range" min="10" value="10" step="5" id="bet">
   
   <script src="script.js"></script>
 </body>

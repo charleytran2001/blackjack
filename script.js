@@ -5,7 +5,6 @@ var user_hand_total;
 var user_hand;
 var dealer_hand_total;
 var dealer_hand;
-var charlie_counter;
 var user_card_counter;
 var dealer_card_counter;
 
@@ -128,7 +127,6 @@ function hit() {
   document.getElementById("user_hand_total").innerHTML = "Total: " + user_hand_total;
   
   // Counters
-  charlie_counter++;
   user_card_counter++;
   
   // Checks for 21
@@ -138,6 +136,11 @@ function hit() {
   
   // Checks for bust
   if(user_hand_total > 21) {
+    stand();
+  }
+  
+  // Checks for Charlie
+  if(user_card_counter === 6 && user_hand_total <= 21) {
     stand();
   }
   
@@ -159,22 +162,46 @@ function stand() {
   } else if(dealer_hand_total === 21 && dealer_card_counter === 2) {
       document.getElementById("status").innerHTML = "Dealer Blackjack: You Lose";
       reset();
-  // Checks Charlie counter
-  } else if(charlie_counter === 6 && user_hand_total <= 21) {
+    
+  // Checks for Charlie
+  } else if(user_card_counter === 6 && user_hand_total <= 21 && dealer_card_counter === 6 && dealer_hand_total <= 21) {
+      if(user_hand_total === dealer_hand_total) {
+        document.getElementById("status").innerHTML = "Double 6-Card Charlie: Tie";
+        money += currentBet * 1;
+        document.getElementById("money").innerHTML = "Money: $" + money;
+        reset();
+      } else if(user_hand_total > dealer_hand_total) {
+        document.getElementById("status").innerHTML = "Double 6-Card Charlie - You Have The Larger Hand: You Win";
+        money += currentBet * 2;
+        document.getElementById("money").innerHTML = "Money: $" + money;
+        reset();
+      } else if(dealer_hand_total > user_hand_total) {
+        document.getElementById("status").innerHTML = "Double 6-Card Charlie - The Dealer Has The Larger Hand: You Lose";
+        document.getElementById("money").innerHTML = "Money: $" + money;
+        reset();
+      }
+  } else if(user_card_counter === 6 && user_hand_total <= 21) {
       document.getElementById("status").innerHTML = "6-Card Charlie: You Win";
       money += currentBet * 2;
       document.getElementById("money").innerHTML = "Money: $" + money;
       reset();
+  } else if(dealer_card_counter === 6 && dealer_hand_total <= 21) {
+      document.getElementById("status").innerHTML = "Dealer 6-Card Charlie: You Lose";
+      document.getElementById("money").innerHTML = "Money: $" + money;
+      reset();
+    
   // Checks if user busted
   } else if(user_hand_total > 21) {
       document.getElementById("status").innerHTML = "Bust: You Lose";
       reset();
+    
   // Checks if dealer busted
   } else if(dealer_hand_total > 21) {
       document.getElementById("status").innerHTML = "Dealer Bust: You Win";
       money += currentBet * 2;
       document.getElementById("money").innerHTML = "Money: $" + money;
       reset();
+    
   // Checks for victor
   } else if(user_hand_total > dealer_hand_total) {
       document.getElementById("status").innerHTML = "You Win";
@@ -245,7 +272,7 @@ function reset() {
   document.getElementById("double").hidden = true;
   document.getElementById("double").disabled = false;
   document.getElementById("start").hidden = false;
-  document.getElementById("currentBetOutput").hidden = false;
+  document.getElementById("currentBetOutput").hidden = true;
   document.getElementById("betOutput").hidden = false;
   document.getElementById("bet").hidden = false;
   document.getElementById("surrender").hidden = true;
@@ -261,26 +288,27 @@ function reset() {
     document.getElementById("betOutput").hidden = true;
     document.getElementById("bet").hidden = true;
     document.getElementById("currentBetOutput").hidden = true;
+    document.getElementById("status").innerHTML = "You ran out of money";
     
     var deathmessage = Math.floor(Math.random() * 5 + 1);
     switch(deathmessage) {
       case 1:
-        document.getElementById("status").innerHTML = "You ran out of money and commited toaster bath. You died. THE END";
+        document.getElementById("gameover").innerHTML = "Ashamed of yourself, you went home and commited toaster bath. You died. THE END";
         break;
       case 2:
-        document.getElementById("status").innerHTML = "You ran out of money which means you are now useless to the casino, so the dealer shoots you. You died. THE END";
+        document.getElementById("gameover").innerHTML = "The dealer shoots you for losing. You died. THE END";
         break;
       case 3:
-        document.getElementById("status").innerHTML = "You smoke a cig to relieve the stress of losing all your money. Unfortunately for you, you got lung cancer and died. THE END";
+        document.getElementById("gameover").innerHTML = "You smoke a cig to relieve the stress of wasting all your savings on Blackjack. Unfortunately for you, you got lung cancer and died. THE END";
         break;
       case 4:
-        document.getElementById("status").innerHTML = "You tripped on your way out of the casino and snapped your neck. You died. THE END";
+        document.getElementById("gameover").innerHTML = "You tripped on your way out of the casino and snapped your neck. You died. THE END";
         break;
       case 5:
-        document.getElementById("status").innerHTML = "As you were walking out of the casino, a meteor hits you. You died. THE END";
+        document.getElementById("gameover").innerHTML = "As you were walking out of the casino, a meteor hits you. You died. THE END";
         break;
       case 6:
-        document.getElementById("status").innerHTML = "You second you got into your car to leave, it blew up. You died. THE END";
+        document.getElementById("gameover").innerHTML = "You second you got into your car to leave, it blew up. You died. THE END";
         break;
     }    
 //     document.getElementById("status").innerHTML = " You died. THE END";

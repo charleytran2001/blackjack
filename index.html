@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Blackjack</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Blackjack</title>
 </head>
+
 <body>
-  <p id="status">Welcome to Blackjack</p>
-  <p id="user_hand"><p>
-  <p id="user_hand_total"><p>
-  <p id="dealer_hand"><p>
-  <p id="dealer_hand_total"><p>
-  <button id="hit" onclick="hit()" hidden>Hit</button>
-  <button id="stand" onclick="stand()" hidden>Stand</button>
-  <button id="start" onclick="start()">Start</button>
-  <button id="double" onclick="double()" hidden>Double Down</button>
-  <button id="surrender" onclick="surrender()" hidden>Surrender</button>
-  <p>----------</p>
-  <p id="money"></p>
-  <p id="currentBetOutput" hidden>Currently Betting: $0</p>
-  <p id="betOutput">Bet:</p>
-  <input type="range" min="10" value="10" step="5" id="bet">
-  <p id="gameover"></p>
-  
-  <script src="script.js"></script>
+    <!-- Start & Continue -->
+    <button id="start" onclick="reset()">Start</button>
+    <button id="continue" onclick="bettingScreen()" hidden>Continue</button>
+
+    <!-- Betting Screen Buttons -->
+    <p id="money"></p>
+    <p id="betOutput"></p>
+    <input type="range" min="5" value="5" step="5" id="bet">
+
+    <p id="gameover"></p>
+    
+    <!-- Game Buttons -->
+    <button id="hit" onclick="hit()" hidden>Hit</button>
+    <button id="stand" onclick="stand()" hidden>Stand</button>
+    <button id="double" onclick="double()" hidden>Double Down</button>
+    <button id="surrender" onclick="surrender()" hidden>Surrender</button>
+    <p id="userHand"></p>
+    <!-- <p id="userHardHandTotal"></p> -->
+    <!-- <p id="userSoftHandTotal"></p> -->
+    <p id="userComparisonTotal"></p>
+    <br>
+    <p id="dealerHand"></p>
+    <!-- <p id="dealerHardHandTotal"></p> -->
+    <!-- <p id="dealerSoftHandTotal"></p> -->
+    <p id="dealerComparisonTotal"></p>
+    <br>
+    <p id="currentBetOutput" hidden></p>
+    <p id="status"></p>
+
+    <script src="script.js"></script>
 </body>
+
 </html>

@@ -8,37 +8,59 @@
 </head>
 
 <body>
-    <!-- Start & Continue -->
-    <button id="start" onclick="reset()">Start</button>
-    <button id="continue" onclick="bettingScreen()" hidden>Continue</button>
-
     <!-- Betting Screen Buttons -->
-    <p id="money"></p>
-    <p id="betOutput"></p>
-    <input type="range" min="5" value="5" step="5" id="bet">
+    <p id="status"></p>
+
+    <p id="currentBetOutput" hidden></p>
+
+
 
     <p id="gameover"></p>
-    
+
+    <p id="userHand"></p>
+    <!-- <p id="userHardHandTotal"></p> -->
+    <!-- <p id="userSoftHandTotal"></p> -->
+    <p id="userComparisonTotal"></p>
+    <!-- <br> -->
+    <p id="dealerHand"></p>
+    <!-- <p id="dealerHardHandTotal"></p> -->
+    <!-- <p id="dealerSoftHandTotal"></p> -->
+    <p id="dealerComparisonTotal"></p>
+    <!-- <br> -->
+
     <!-- Game Buttons -->
     <button id="hit" onclick="hit()" hidden>Hit</button>
     <button id="stand" onclick="stand()" hidden>Stand</button>
     <button id="double" onclick="double()" hidden>Double Down</button>
     <button id="insurance" onclick="insurance()" hidden>Take Insurance</button>
     <button id="surrender" onclick="surrender()" hidden>Surrender</button>
-    <p id="userHand"></p>
-    <!-- <p id="userHardHandTotal"></p> -->
-    <!-- <p id="userSoftHandTotal"></p> -->
-    <p id="userComparisonTotal"></p>
-    <br>
-    <p id="dealerHand"></p>
-    <!-- <p id="dealerHardHandTotal"></p> -->
-    <!-- <p id="dealerSoftHandTotal"></p> -->
-    <p id="dealerComparisonTotal"></p>
-    <br>
-    <p id="currentBetOutput" hidden></p>
-    <p id="status"></p>
 
-    <script src="script.js"></script>
+    <p id="money"></p>
+    <p id="betOutput"></p>
+    <input type="range" min="5" value="5" step="5" id="bet">
+    <br>
+    <br>
+
+    <button id="cancel-insurance" onclick="cancelInsurance()" hidden>Cancel</button>
+    <button id="take-insurance" onclick="takeInsurance()" hidden>Insure</button>
+
+    <!-- Start & Continue -->
+    <button id="start" onclick="resetGame()">Start</button>
+    <button id="continue" onclick="bettingScreen()" hidden>Continue</button>
+
+    <script src="js/user-actions/hit.js"></script>
+    <script src="js/user-actions/stand.js"></script>
+    <script src="js/user-actions/double-down.js"></script>
+    <script src="js/user-actions/split.js"></script>
+    <script src="js/user-actions/insurance.js"></script>
+    <script src="js/user-actions/surrender.js"></script>
+
+    <script src="js/gameover.js"></script>
+    <script src="js/card-generator.js"></script>
+    <script src="js/dealer-hit.js"></script>
+    <script src="js/reset-game.js"></script>
+    <script src="js/betting-screen.js"></script>
+    <script src="js/script.js"></script>  
 </body>
 
 </html>
